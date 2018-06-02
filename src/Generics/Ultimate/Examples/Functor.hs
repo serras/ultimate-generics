@@ -35,9 +35,9 @@ instance FunctorField r (Kon t) where
   gfmapF _ f (E x) = E x
 
 gfmap :: forall f a b code.
-         (Generic f code, AllD (FunctorField f) code)
+         (Generic f, AllD (FunctorField f) (Code f))
       => (a -> b) -> f a -> f b
-gfmap f = unravel . to1 . goS . from1 . ravel
+gfmap f = unravel . to . goS . from . ravel
   where
     goS :: AllD (FunctorField f) xs
         => NS (NB (* -> *) (* -> *) '[f] (a :&: LoT0)) xs

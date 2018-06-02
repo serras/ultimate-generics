@@ -13,10 +13,18 @@ maintainer:          trupill@gmail.com
 category:            Generics
 build-type:          Simple
 extra-source-files:  ChangeLog.md
-cabal-version:       >=1.10
+cabal-version:       >= 1.10
 
 library
-  -- exposed-modules:
+  exposed-modules:     Data.Promoted.Nat,
+                       Data.Promoted.List,
+                       Generics.Ultimate.Code,
+                       Generics.Ultimate.ListOfTypes,
+                       Generics.Ultimate.Interpretation,
+                       Generics.Ultimate.Class,
+                       Generics.Ultimate.Single,
+                       Generics.Ultimate.Family,
+                       Generics.Ultimate
   -- other-modules:
   -- other-extensions:
   build-depends:       base >= 4.9 && < 5
