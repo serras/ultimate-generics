@@ -62,6 +62,8 @@ ravel = go sslot
 data El k (fs :: [k]) (n :: Nat) (tys :: LoT k) where
   El :: SNat n -> ApplyT k (Lkp n fs) tys -> El k fs n tys
 
+type El1 k (f :: k) (tys :: LoT k) = El k '[f] Z tys
+
 unravelEl :: El k fs n tys -> Apply k (Lkp n fs) tys
 unravelEl (El _ x) = unravel x
 

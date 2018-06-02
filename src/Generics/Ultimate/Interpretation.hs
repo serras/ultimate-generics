@@ -61,3 +61,6 @@ data NS :: (k -> *) -> [k] -> * where
 
 data SOP dk (fam :: Family dk) (n :: Nat) (rs :: [dk]) (tys :: LoT dk) where
   SOP :: SNat n -> NS (NB dk dk rs tys) (Lkp n fam) -> SOP dk fam n rs tys
+
+type SOP1 dk (dt :: DataType dk) (r :: dk) (tys :: LoT dk)
+     = SOP dk '[dt] Z '[r] tys

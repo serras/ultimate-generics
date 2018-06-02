@@ -12,7 +12,7 @@ module Generics.Ultimate.Examples.List where
 import Generics.Ultimate
 
 instance GenericFamily (* -> *) '[ [] ] where
-  type Codes '[ [] ] = '[ '[ Constr '[], Constr '[ Explicit V0, Explicit (R0 :@: V0) ]]]
+  type Codes '[ [] ] = '[ '[ Constr '[], Constr '[ Explicit V0, Explicit (R0 :@: V0) ] ] ]
 
   from (El SZ (A# (A0 [])))
     = SOP SZ $ Here $ Cr $ Nil
@@ -28,3 +28,5 @@ instance GenericFamily (* -> *) '[ [] ] where
         = El SZ (A# (A0 []))
       to' (SLoTA SLoT0) (SOP SZ (There (Here (Cr (E x :* E xs :* Nil)))))
         = El SZ (A# (A0 (x : xs)))
+
+instance Generic [] '[ Constr '[], Constr '[ Explicit V0, Explicit (R0 :@: V0) ] ]

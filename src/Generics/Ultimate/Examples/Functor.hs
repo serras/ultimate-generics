@@ -31,14 +31,10 @@ instance (Functor f, FunctorField r x)
 instance FunctorField r (Kon t) where
   gfmapF _ f (E x) = E x
 
-gfmap :: forall (f :: * -> *) a b (code :: DataType (* -> *)).
-         (GenericFamily (* -> *) '[f],
-          Codes '[f] ~ '[code],
-          AllD (FunctorField f) code)
+gfmap :: forall f a b code.
+         (Generic f code, AllD (FunctorField f) code)
       => (a -> b) -> f a -> f b
-gfmap f x = let SOP SZ x' = from (El SZ (A# (A0 x)))
-                y' = goS x'
-             in unravelEl (to (SOP SZ y'))
+gfmap f = unravel . to1 . goS . from1 . ravel
   where
     goS :: AllD (FunctorField f) xs
         => NS (NB (* -> *) (* -> *) '[f] (a :&: LoT0)) xs
