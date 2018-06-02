@@ -25,6 +25,9 @@ instance FunctorField r V0 where
 instance (FunctorField r x)
          => FunctorField r (R0 :@: x) where
   gfmapF r f (E x) = E (r (unE . gfmapF r f . E @_ @_ @x) x)
+instance (Functor (f a), FunctorField r x)
+         => FunctorField r (Kon f :@: Kon a :@: x) where
+  gfmapF r f (E x) = E (fmap (unE . gfmapF r f . E @_ @_ @x) x)
 instance (Functor f, FunctorField r x)
          => FunctorField r (Kon f :@: x) where
   gfmapF r f (E x) = E (fmap (unE . gfmapF r f . E @_ @_ @x) x)
