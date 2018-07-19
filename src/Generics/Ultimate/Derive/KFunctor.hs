@@ -25,6 +25,14 @@ class KFunctor (f :: k) where
                => Mappings as bs -> ApplyT k f as -> ApplyT k f bs
   kmap fs = to . gkmap (Proxy :: Proxy f) fs . from
 
+fmapDefault :: (Generic f, KFunctor f)
+             => (a -> b) -> f a -> f b
+fmapDefault f = unravel . kmap (MCons f MNil) . ravel
+
+bimapDefault :: (Generic f, KFunctor f)
+             => (a -> b) -> (c -> d) -> f a c -> f b d
+bimapDefault f g = unravel . kmap (MCons f (MCons g MNil)) . ravel
+
 gkmap :: forall k (f :: k) (as :: LoT k) (bs :: LoT k)
        . (Generic f, AllValuesD KFunctorField (Code f), SatisfyConstrD k bs (Code f))
       => Proxy f -> Mappings as bs -> SOP k (Code f) as -> SOP k (Code f) bs
