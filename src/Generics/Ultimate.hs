@@ -12,3 +12,4 @@ import Generics.Ultimate.ListOfTypes as Export
 import Generics.Ultimate.Interpretation as Export
 import Generics.Ultimate.Class as Export
 import Generics.Ultimate.Constraints as Export
+import Generics.Ultimate.Instances as Export

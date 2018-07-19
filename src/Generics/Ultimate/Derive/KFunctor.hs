@@ -9,6 +9,7 @@
 {-# language TypeInType            #-}
 {-# language DefaultSignatures     #-}
 {-# language FlexibleInstances     #-}
+{-# language TypeFamilies          #-}
 module Generics.Ultimate.Derive.KFunctor where
 
 import Generics.Ultimate
@@ -32,6 +33,28 @@ fmapDefault f = unravel . kmap (MCons f MNil) . ravel
 bimapDefault :: (Generic f, KFunctor f)
              => (a -> b) -> (c -> d) -> f a c -> f b d
 bimapDefault f g = unravel . kmap (MCons f (MCons g MNil)) . ravel
+
+{-
+class BuildMapper k where
+  type Mapper k (as :: LoT k) (bs :: LoT k) t
+  mapper :: (Mappings as bs -> t)
+         -> Mapper k as bs t
+
+instance BuildMapper (*) where
+  type Mapper (*) LoT0 LoT0 t = t 
+  mapper f = f MNil
+
+instance BuildMapper l => BuildMapper (k -> l) where
+  type Mapper (k -> l) (a :&: as) (b :&: bs) t = (a -> b) -> Mapper l as bs t
+-}
+
+-- Some automatically derived instances
+
+instance KFunctor []
+instance KFunctor Maybe
+instance KFunctor Either
+
+-- Implementation of generic kmap
 
 gkmap :: forall k (f :: k) (as :: LoT k) (bs :: LoT k)
        . (Generic f, AllValuesD KFunctorField (Code f), SatisfyConstrD k bs (Code f))

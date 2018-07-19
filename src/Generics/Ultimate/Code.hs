@@ -27,6 +27,8 @@ data Atom (dk :: Kind) k where
         -> Atom dk k1
         -> Atom dk k2
 
+type f :$: x = Kon f :@: x
+
 data Field (dk :: Kind) where
   Value  :: Atom dk (*)
          -> Field dk

@@ -21,9 +21,9 @@ library
                        Generics.Ultimate.Interpretation,
                        Generics.Ultimate.Class,
                        Generics.Ultimate.Constraints,
+                       Generics.Ultimate.Instances,
                        Generics.Ultimate,
                        Generics.Ultimate.Derive.KFunctor,
-                       Generics.Ultimate.Examples.List,
                        Generics.Ultimate.Examples.Functor
   -- other-modules:
   -- other-extensions:
