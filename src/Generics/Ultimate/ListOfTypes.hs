@@ -3,24 +3,17 @@
 {-# language TypeOperators          #-}
 {-# language GADTs                  #-}
 {-# language TypeFamilies           #-}
-{-# language PolyKinds              #-}
 {-# language KindSignatures         #-}
 {-# language TypeInType             #-}
 {-# language MultiParamTypeClasses  #-}
 {-# language FunctionalDependencies #-}
-{-# language TypeSynonymInstances   #-}
 {-# language FlexibleInstances      #-}
-{-# language FlexibleContexts       #-}
-{-# language ScopedTypeVariables    #-}
 {-# language TypeApplications       #-}
 {-# language MagicHash              #-}
 module Generics.Ultimate.ListOfTypes where
 
 import Data.Kind (type (*))
 import Data.Proxy
-
-import Data.Promoted.Nat
-import Data.Promoted.List
 
 infixr 5 :&:
 data LoT k where

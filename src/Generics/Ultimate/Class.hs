@@ -1,21 +1,19 @@
-{-# language DataKinds       #-}
-{-# language ConstraintKinds #-}
-{-# language TypeOperators   #-}
-{-# language TypeFamilies    #-}
-{-# language PolyKinds       #-}
+{-# language DataKinds          #-}
+{-# language ConstraintKinds    #-}
+{-# language ExplicitNamespaces #-}
+{-# language TypeOperators      #-}
+{-# language TypeFamilies       #-}
+{-# language PolyKinds          #-}
+{-# language KindSignatures     #-}
+{-# language TypeInType         #-}
 module Generics.Ultimate.Class where
 
-import Data.Kind (Constraint)
-
 import Generics.Ultimate.Code
+import Generics.Ultimate.ListOfTypes
+import Generics.Ultimate.Interpretation
 
-type family AllD c xs :: Constraint where
-  AllD c '[] = ()
-  AllD c (x ': xs) = (AllB c x, AllD c xs)
-
-type family AllB c xs :: Constraint where
-  AllB c (Constr x) = AllE c x
-
-type family AllE c xs :: Constraint where
-  AllE c '[] = ()
-  AllE c (Explicit x ': xs) = (c x, AllE c xs)
+class Generic (f :: dk) where
+  type Code f :: DataType dk
+  from :: ApplyT dk f tys -> SOP dk (Code f) tys
+  to   :: SSLoT dk tys
+       => SOP dk (Code f) tys -> ApplyT dk f tys

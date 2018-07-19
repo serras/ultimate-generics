@@ -16,15 +16,15 @@ extra-source-files:  ChangeLog.md
 cabal-version:       >= 1.10
 
 library
-  exposed-modules:     Data.Promoted.Nat,
-                       Data.Promoted.List,
-                       Generics.Ultimate.Code,
+  exposed-modules:     Generics.Ultimate.Code,
                        Generics.Ultimate.ListOfTypes,
                        Generics.Ultimate.Interpretation,
                        Generics.Ultimate.Class,
-                       Generics.Ultimate.Single,
-                       Generics.Ultimate.Family,
-                       Generics.Ultimate
+                       Generics.Ultimate.Constraints,
+                       Generics.Ultimate,
+                       Generics.Ultimate.Derive.KFunctor,
+                       Generics.Ultimate.Examples.List,
+                       Generics.Ultimate.Examples.Functor
   -- other-modules:
   -- other-extensions:
   build-depends:       base >= 4.9 && < 5

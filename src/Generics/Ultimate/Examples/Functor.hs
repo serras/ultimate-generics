@@ -7,52 +7,42 @@
 {-# language MagicHash             #-}
 {-# language TypeApplications      #-}
 {-# language TypeInType            #-}
-{-# language RankNTypes            #-}
 {-# language ScopedTypeVariables   #-}
 {-# language FlexibleContexts      #-}
 module Generics.Ultimate.Examples.Functor where
 
 import Generics.Ultimate
 
-class FunctorField r (t :: Atom (* -> *) (* -> *) (*)) where
-  gfmapF :: (forall x y. (x -> y) -> r x -> r y)
-         -> (a -> b)
-         -> NA (* -> *) (* -> *) '[r] (a :&: LoT0) (Explicit t)
-         -> NA (* -> *) (* -> *) '[r] (b :&: LoT0) (Explicit t)
+class FunctorField (t :: Atom (* -> *) (*)) where
+  gfmapF :: (a -> b)
+         -> NA (* -> *) (a :&: LoT0) (Value t)
+         -> NA (* -> *) (b :&: LoT0) (Value t)
 
-instance FunctorField r V0 where
-  gfmapF _ f (E x) = E (f x)
-instance (FunctorField r x)
-         => FunctorField r (R0 :@: x) where
-  gfmapF r f (E x) = E (r (unE . gfmapF r f . E @_ @_ @x) x)
-instance (Functor (f a), FunctorField r x)
-         => FunctorField r (Kon f :@: Kon a :@: x) where
-  gfmapF r f (E x) = E (fmap (unE . gfmapF r f . E @_ @_ @x) x)
-instance (Functor f, FunctorField r x)
-         => FunctorField r (Kon f :@: x) where
-  gfmapF r f (E x) = E (fmap (unE . gfmapF r f . E @_ @_ @x) x)
-instance FunctorField r (Kon t) where
-  gfmapF _ f (E x) = E x
+instance FunctorField V0 where
+  gfmapF f (V x) = V (f x)
+instance forall f a x. (Functor (f a), FunctorField x)
+         => FunctorField (Kon f :@: Kon a :@: x) where
+  gfmapF f (V x) = V (fmap (unV . gfmapF f . V @_ @_ @x) x)
+instance forall f x. (Functor f, FunctorField x)
+         => FunctorField (Kon f :@: x) where
+  gfmapF f (V x) = V (fmap (unV . gfmapF f . V @_ @_ @x) x)
+instance FunctorField (Kon t) where
+  gfmapF f (V x) = V x
 
-gfmap :: forall f a b code.
-         (Generic f, AllD (FunctorField f) (Code f))
+gfmap :: forall f a b.
+         (Generic f, AllValuesD FunctorField (Code f))
       => (a -> b) -> f a -> f b
 gfmap f = unravel . to . goS . from . ravel
   where
-    goS :: AllD (FunctorField f) xs
-        => NS (NB (* -> *) (* -> *) '[f] (a :&: LoT0)) xs
-        -> NS (NB (* -> *) (* -> *) '[f] (b :&: LoT0)) xs
-    goS (Here x)  = Here  (goB x)
+    goS :: AllValuesD FunctorField xs
+        => NS (NP (NA (* -> *) (a :&: LoT0))) xs
+        -> NS (NP (NA (* -> *) (b :&: LoT0))) xs
+    goS (Here  x) = Here  (goP x)
     goS (There x) = There (goS x)
 
-    goB :: AllB (FunctorField f) xs
-        => NB (* -> *) (* -> *) '[f] (a :&: LoT0) xs
-        -> NB (* -> *) (* -> *) '[f] (b :&: LoT0) xs
-    goB (Cr x) = Cr (goP x)
-
-    goP :: AllE (FunctorField f) xs
-        => NP (NA (* -> *) (* -> *) '[f] (a :&: LoT0)) xs
-        -> NP (NA (* -> *) (* -> *) '[f] (b :&: LoT0)) xs
+    goP :: AllValuesC FunctorField xs
+        => NP (NA (* -> *) (a :&: LoT0)) xs
+        -> NP (NA (* -> *) (b :&: LoT0)) xs
     goP Nil         = Nil
-    goP (E x :* xs) = gfmapF gfmap f (E x) :* goP xs
+    goP (V x :* xs) = gfmapF f (V x) :* goP xs
   

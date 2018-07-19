@@ -1,28 +1,28 @@
 {-# language TypeOperators         #-}
 {-# language DataKinds             #-}
-{-# language ExplicitNamespaces    #-}
-{-# language MultiParamTypeClasses #-}
-{-# language FlexibleInstances     #-}
 {-# language TypeFamilies          #-}
 {-# language MagicHash             #-}
 {-# language TypeApplications      #-}
 {-# language TypeInType            #-}
+{-# language ScopedTypeVariables   #-}
+{-# language InstanceSigs          #-}
+{-# language FlexibleContexts      #-}
 module Generics.Ultimate.Examples.List where
 
 import Generics.Ultimate
+import Generics.Ultimate.Derive.KFunctor
 
 instance Generic [] where
-  type Code [] = '[ Constr '[], Constr '[ Explicit V0, Explicit (R0 :@: V0) ] ]
+  type Code [] = '[ '[], '[ Value V0, Value (Kon [] :@: V0) ] ]
 
-  from (A# (A0 [])) = Here $ Cr $ Nil
-  from (A# (A0 (x : xs))) = There $ Here $ Cr $ E @_ @_ @V0 x :* E xs :* Nil
+  from (A# (A0 [])) = Here $ Nil
+  from (A# (A0 (x : xs))) = There $ Here $ V x :* V xs :* Nil
   
-  to = to' sslot
-    where
-      to' :: SLoT (* -> *) tys
-          -> Rep (* -> *) (Code []) [] tys
-          -> ApplyT (* -> *) [] tys
-      to' (SLoTA SLoT0) (Here (Cr Nil))
-        = A# (A0 [])
-      to' (SLoTA SLoT0) (There (Here (Cr (E x :* E xs :* Nil))))
-        = A# (A0 (x : xs))
+  to :: forall tys. SSLoT (* -> *) tys
+     => SOP (* -> *) (Code []) tys -> ApplyT (* -> *) [] tys
+  to x = case sslot @_ @tys of
+    SLoTA SLoT0 -> case x of
+      Here Nil -> A# (A0 [])
+      There (Here (V x :* V xs :* Nil))  -> A# (A0 (x : xs))
+
+instance KFunctor []
